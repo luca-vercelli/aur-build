@@ -9,7 +9,6 @@
 #
 # hacked: /etc/sudoers
 #         /usr/share/polkit-1/rules.d/00-aur-build.rules
-#         larger /tmp
 
 import argparse
 import os
@@ -25,7 +24,7 @@ import getpass
 VERSION = "0.1"
 LOCAL_DB_PATH = "/var/cache/aur-build/"
 LOCAL_DB = LOCAL_DB_PATH + "db"
-PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-"  + getpass.getuser()
+PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-" + getpass.getuser()
 PACMAN_PKG_FOLDER = "/var/cache/pacman/pkg/"
 
 STATUS_NEW = "NEW"
@@ -39,6 +38,7 @@ MAX_PACKAGES = None     # mainly for debug. None means no limit.
 
 db = None
 args = None
+
 
 class Database:
     def __init__(self, path):
@@ -170,8 +170,8 @@ class Package:
         if self.status == STATUS_BUILDS:
             try:
                 sh.pamac("remove", "--no-confirm", self.pkgname,
-                      _out=sys.stdout,
-                      _err=sys.stderr)
+                         _out=sys.stdout,
+                         _err=sys.stderr)
                 # suggestion: don't use RemoveUnrequiredDeps
             except sh.ErrorReturnCode as e:
                 print("Warning! cannot remove package. Pamac aborted with status %d" %
@@ -393,9 +393,9 @@ def print_statistics(pkgs_dict):
         if time < 60:                   # min/hour
             time = str(time) + "'"
         elif time < 288:                # min/day
-            time = str(time//60) + "h" + str(time%60) + "'"
+            time = str(time // 60) + "h" + str(time % 60) + "'"
         else:
-            time = str(time//288) + "d" + str((time%288)//60) + "h"
+            time = str(time // 288) + "d" + str((time % 288) // 60) + "h"
         buildtime[status] = time
         
     print("\t\tPckgs\tBuild time (h)\tSize (Mb)")
@@ -410,6 +410,7 @@ def print_statistics(pkgs_dict):
            pkgcnt[STATUS_DELETED],     buildtime[STATUS_DELETED],
            pkgcnt[STATUS_OFFICIAL],    buildtime[STATUS_OFFICIAL]))
     print("Max build time for a package is " + str(max_buildtime) + " min. Max file size is " + str(max_fsize) + "Mb.")
+
 
 def check_if_root():
     if os.geteuid() != 0:
