@@ -31,7 +31,10 @@ You have to hack `sudo` and `policykit` in order to avoid pamac to ask for passw
 
 ## Usage
 
-Simply run
+Run with
 
     ./aur-build.py --run
 
+Other options are documented with
+
+    ./aur-build.py --help
