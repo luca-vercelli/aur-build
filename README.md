@@ -1,5 +1,5 @@
 # aur-build
-Build all AUR packages via pamac
+Build all AUR packages via `pamac` (i.e. this is intended for Manjaro Linux)
 
 ## Install
 You are strongly suggested to install this only on a dedicatd machine, or on chroot.
