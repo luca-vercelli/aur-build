@@ -1,7 +1,7 @@
 # aur-build
 Build **all** AUR packages via `pamac` (i.e. this is intended for Manjaro Linux)
 
-Many days of execution can be required to build all. I am building all packages in a VirtualBox machine with 2GB RAM, 1GB /tmp space, inside a laptop. I expect at least 40 days of execution (=1 min x 50000 packages), and many packages won't build due to lack of resources.
+Many days of execution can be required to build all. I am building all packages in a VirtualBox machine with 2GB RAM, 1GB /tmp space, inside a laptop (Manjaro Linux CLI). I expect at least 40 days of execution (=1 min x 50000 packages), and many packages won't build due to lack of resources.
 
 ## Install
 You are strongly suggested to install this only on a dedicatd machine, or under chroot.
@@ -10,7 +10,7 @@ You have to enable AUR repositories on `pamac`.
 
 Install deplendencies and paths:
 
-    pacman -Syu base-devel python-sh
+    pacman -Syu base-devel python-sh pamac-cli
     
     mkdir -p /var/cache/aur-build
     chmod 777 /var/cache/aur-build
