@@ -2,14 +2,19 @@
 Build all AUR packages via `pamac` (i.e. this is intended for Manjaro Linux)
 
 ## Install
-You are strongly suggested to install this only on a dedicatd machine, or on chroot.
+You are strongly suggested to install this only on a dedicatd machine, or under chroot.
 
-You have to hack `sudo` and `policykit` in order to avoid pamac to ask for passwords.
+You have to enable AUR repositories on `pamac`.
+
+Install deplendencies and paths:
 
     pacman -Syu base-devel python-sh
     
     mkdir -p /var/cache/aur-build
     chmod 777 /var/cache/aur-build
+
+
+You have to hack `sudo` and `policykit` in order to avoid `pamac` to ask for passwords. For example in this way:
 
     gpasswd -a %%%myusername%%% wheel
 
