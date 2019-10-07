@@ -234,6 +234,10 @@ def create_arg_parser():
                                dest='build_all',
                                action='store_true',
                                help='Re/build all packages. Shorthand for -n -e -r')
+    group_actions.add_argument('--single',
+                               dest='build_single_pkg',
+                               action='store',
+                               help='Re/build a single package. Cannot be used with -n -e -r')
     group_actions.add_argument('--show-log',
                                dest='show_log',
                                action='store_true',
@@ -439,6 +443,11 @@ if __name__ == "__main__":
         args.build_err = True
         args.rebuild = True
 
+    if args.build_single_pkg:
+        if args.build_new or args.build_err or args.rebuild:
+            print("Cannot --single with other kinds of build")
+            exit(2)
+
     if args.init_db:
         print("Cleaning database...")
         db.create()
@@ -464,6 +473,19 @@ if __name__ == "__main__":
             allowed_status.append(STATUS_BUILDS)
         
         build_all(pkgs_dict, allowed_status)
+        print("Done.")
+        something_was_done = True
+
+    if args.build_single_pkg:
+        print("Start building packages at %s ..." % get_iso_time())
+        pkgs_dict = db.load()
+        pkg = pkgs_dict[args.build_single_pkg]
+        if not pkg:
+            print("Package not found on local db: %s" % args.build_single_pkg)
+            exit(5)
+        # warning: we are not checking if OFFICIAL
+        pkg.build()
+        b.write(pkgs_dict)
         print("Done.")
         something_was_done = True
 
