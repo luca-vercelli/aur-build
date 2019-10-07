@@ -331,10 +331,10 @@ def build_all(pkgs_dict, build_status=[STATUS_NEW]):
               num_packages,
               (num_skipped_packages + num_analysed_packages) // num_packages))
 
-        if args.max_packages and num_built_packages >= args.max_packages:
+        if args.max_packages and num_analysed_packages >= args.max_packages:
             print("====================")
             print("Exiting because we analysed MAX_PACKAGES=%d packages" %
-                  num_built_packages)
+                  num_analysed_packages)
             return
 
 
