@@ -26,6 +26,7 @@ LOCAL_DB_PATH = "/var/cache/aur-build/"
 LOCAL_DB = LOCAL_DB_PATH + "db"
 PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-" + getpass.getuser()
 PACMAN_PKG_FOLDER = "/var/cache/pacman/pkg/"
+STOPFILE = LOCAL_DB_PATH + "stop"       # touch this to stop execution
 
 STATUS_NEW = "NEW"
 STATUS_DOESNTBUILD = "DOESNTBUILD"
@@ -297,6 +298,12 @@ def get_iso_time():
     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())   
 
 
+def stop_file_exists():
+    """
+    Return true if somebody has been created a stop file
+    """
+    return os.path.exists(STOPFILE)
+
 def build_all(pkgs_dict, build_status=[STATUS_NEW]):
     """
     Build all packages with correct status
@@ -339,6 +346,15 @@ def build_all(pkgs_dict, build_status=[STATUS_NEW]):
             print("====================")
             print("Exiting because we analysed MAX_PACKAGES=%d packages" %
                   num_analysed_packages)
+            return
+
+        if stop_file_exists():
+            print("====================")
+            print("Exiting because stop file exists");
+            try:
+                os.unlink(STOPFILE)
+            except:
+                print("Error deleting stop file, you *must* delete it on your own");
             return
 
 
@@ -405,7 +421,7 @@ def print_statistics(pkgs_dict):
         buildtime[status] = time
         
     print("\t\tPckgs\tBuild time (h)\tSize (Mb)")
-    print(("Builds:\t\t%d\t%s\t\t\t%d\n" +
+    print(("Builds:\t\t%d\t%s\t\t%d\n" +
            "Doesn't build:\t%d\t%s\n" +
            "New:\t\t%d\t%s\n" +
            "Deleted:\t%d\t%s\n" +
