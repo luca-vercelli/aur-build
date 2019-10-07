@@ -193,13 +193,6 @@ def program_name():
     return os.path.basename(__file__)
 
 
-def print_version():
-    """
-    Just print program version
-    """
-    print("%s v.%s" % (program_name(), VERSION))
-
-
 def create_arg_parser():
     """
     Create parser for parsing CLI arguments
@@ -300,7 +293,7 @@ def get_iso_time():
 
 def stop_file_exists():
     """
-    Return true if somebody has been created a stop file
+    Return true if somebody has created a stop file
     """
     return os.path.exists(STOPFILE)
 
