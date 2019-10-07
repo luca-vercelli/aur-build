@@ -375,12 +375,14 @@ def print_statistics(pkgs_dict):
         }
     fsize = 0
     max_buildtime = 0
+    sum_buildtime = 0
     max_fsize = 0
 
     for pkg in pkgs_dict.values():
         pkgcnt[pkg.status] = pkgcnt[pkg.status] + 1
         tm = pkg.buildtime or 0
         buildtime[pkg.status] = buildtime[pkg.status] + tm
+        sum_buildtime = sum_buildtime + tm
         if tm > max_buildtime:
             max_buildtime = tm
         if pkg.filename is not None:
@@ -409,7 +411,9 @@ def print_statistics(pkgs_dict):
            pkgcnt[STATUS_NEW],         buildtime[STATUS_NEW],
            pkgcnt[STATUS_DELETED],     buildtime[STATUS_DELETED],
            pkgcnt[STATUS_OFFICIAL],    buildtime[STATUS_OFFICIAL]))
-    print("Max build time for a package is " + str(max_buildtime) + " min. Max file size is " + str(max_fsize) + "Mb.")
+    print("Max build time for a package is " + str(max_buildtime) + " min.")
+    print("Average build time for a package is " + str(sum_buildtime // pkgcnt[STATUS_BUILDS]) + " min.")
+    print("Max file size is " + str(max_fsize // 1048576) + "Mb.")
 
 
 def check_if_root():
