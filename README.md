@@ -20,11 +20,11 @@ You have to hack `sudo` and `policykit` in order to avoid `pamac` to ask for pas
 
     gpasswd -a %%%myusername%%% wheel
 
-    echo << END > /etc/sudoers.d/90-aur-build
+    echo '
     %wheel ALL=(ALL) NOPASSWD: ALL
-    END
+    ' > /etc/sudoers.d/90-aur-build
 
-    echo << END > /usr/share/polkit-1/rules.d/20-aur-build.rules
+    echo '
     // -*- mode: js2 -*-
     polkit.addRule(function(action, subject) {
         if ((action.id === "org.freedesktop.policykit.exec" || 
@@ -34,7 +34,7 @@ You have to hack `sudo` and `policykit` in order to avoid `pamac` to ask for pas
                 return polkit.Result.YES;
         }
     });
-    END
+    ' > /usr/share/polkit-1/rules.d/20-aur-build.rules
 
 ## Usage
 
