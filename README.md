@@ -54,8 +54,8 @@ Show some statistics on this database with
 
 ## Bad packages to take care of
 
-`acestream-mozilla-plugin` build fails, after 1347 minutes of build.
+`acestream-mozilla-plugin` build fails, after 1347 minutes of build (this shouldn't happen with new _timeout_ option)
 
-`acpi_call-ck` asks the user for something, even if `--no-confirm` pacman option has been selected
+`acpi_call-ck` asks the user for something, even if `--no-confirm` pacman option has been selected, and at last hangs up
 
 
