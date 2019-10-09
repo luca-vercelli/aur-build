@@ -156,7 +156,8 @@ class Package:
         try:
             sh.pamac("build", "--no-confirm", self.pkgname,
                      _out=sys.stdout,
-                     _err=sys.stderr)
+                     _err=sys.stderr,
+                     _timeout=7200)         # max. two hours
             # I don't know package version here. I take the last one built
             file_filter = PACMAN_PKG_FOLDER + self.pkgname + "*.pkg.tar.xz"
             self.filename = sorted(glob.glob(file_filter))[-1]
