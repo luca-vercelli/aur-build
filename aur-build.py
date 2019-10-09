@@ -368,6 +368,30 @@ def update_db():
     db.write(pkgs_dict)
 
 
+def format_minutes(minutes):
+    """
+    Convert minutes into days/hours/minutes
+    :param: minutes must be int
+    """
+    if minutes < 60:                   # min/hour
+        return str(minutes) + "'"
+    elif minutes < 1440:                # min/day
+        return str(minutes // 60) + "h" + str(minutes % 60) + "'"
+    else:
+        return str(minutes // 1440) + "d" + str((minutes % 1440) // 60) + "h"
+
+
+def format_size(bytes):
+    if bytes < 1024:
+        return str(bytes) + "b"
+    elif bytes < 1048576:
+        return str(bytes // 1024) + "Kb"
+    elif bytes < 1073741824:
+        return str(bytes // 1048576) + "Mb"
+    else:
+        return str(bytes // 1073741824) + "Gb"
+
+
 def print_statistics(pkgs_dict):
     """
     Print out statistics on database, grouped by status
@@ -405,28 +429,22 @@ def print_statistics(pkgs_dict):
                 max_fsize = sz
 
     for status, time in buildtime.items():
-        if time < 60:                   # min/hour
-            time = str(time) + "'"
-        elif time < 288:                # min/day
-            time = str(time // 60) + "h" + str(time % 60) + "'"
-        else:
-            time = str(time // 288) + "d" + str((time % 288) // 60) + "h"
-        buildtime[status] = time
+        buildtime[status] = format_minutes(time)
         
-    print("\t\tPckgs\tBuild time (h)\tSize (Mb)")
-    print(("Builds:\t\t%d\t%s\t\t%d\n" +
+    print("\t\tPckgs\tBuild time (h)\tSize")
+    print(("Builds:\t\t%d\t%s\t\t%s\n" +
            "Doesn't build:\t%d\t%s\n" +
            "New:\t\t%d\t%s\n" +
            "Deleted:\t%d\t%s\n" +
            "Official:\t%d\t%s\n") %
-          (pkgcnt[STATUS_BUILDS],      buildtime[STATUS_BUILDS],        fsize//1048576,
+          (pkgcnt[STATUS_BUILDS],      buildtime[STATUS_BUILDS],        format_size(fsize),
            pkgcnt[STATUS_DOESNTBUILD], buildtime[STATUS_DOESNTBUILD],
            pkgcnt[STATUS_NEW],         buildtime[STATUS_NEW],
            pkgcnt[STATUS_DELETED],     buildtime[STATUS_DELETED],
            pkgcnt[STATUS_OFFICIAL],    buildtime[STATUS_OFFICIAL]))
     print("Max build time for a package is " + str(max_buildtime) + " min.")
     print("Average build time for a package is " + str(sum_buildtime // pkgcnt[STATUS_BUILDS]) + " min.")
-    print("Max file size is " + str(max_fsize // 1048576) + "Mb.")
+    print("Max file size is " + format_size(max_fsize))
 
 
 def check_if_root():
