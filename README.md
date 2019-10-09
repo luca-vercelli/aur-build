@@ -1,7 +1,7 @@
 # aur-build
 Build **all** AUR packages via `pamac` (i.e. this is intended for Manjaro Linux)
 
-Many days of execution can be required to build all. I am building all packages in a VirtualBox machine with 2GB RAM, 1GB /tmp space, inside a laptop (Manjaro Linux CLI). I expect at least 40 days of execution (=1 min x 50000 packages), and many packages won't build due to lack of resources.
+Many days of execution can be required to build all. I am building all packages in a VirtualBox machine with 2GB RAM, 1GB /tmp space, inside a laptop (Manjaro Linux CLI). I expect at least 400 days of execution (=10 min x 50000 packages), and many packages won't build due to lack of resources.
 
 ## Install
 You are strongly suggested to install this only on a dedicatd machine, or under chroot.
@@ -52,6 +52,10 @@ Show some statistics on this database with
 
     ./aur-build.py --stats
 
+## Bak packages to care about
 
+`acestream-mozilla-plugin` build fails, after 1347 minutes of build.
+
+`acpi_call-ck` asks the user for something, even if `--no-confirm` pacman option has been selected
 
 
