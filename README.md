@@ -58,4 +58,6 @@ Show some statistics on this database with
 
 `acpi_call-ck` asks the user for something, even if `--no-confirm` pacman option has been selected, and at last hangs up
 
+`active-collab-timer` asks the user for something, even if `--no-confirm` pacman option has been selected
+
 
