@@ -155,6 +155,7 @@ class Package:
         self.builtwhen = get_iso_date()   # es. 2008-11-22
         try:
             sh.pamac("build", "--no-confirm", self.pkgname,
+                     _in=sys.stdin,
                      _out=sys.stdout,
                      _err=sys.stderr,
                      _timeout=7200)         # max. two hours
