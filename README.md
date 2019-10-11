@@ -61,3 +61,5 @@ Other options are documented with
 
 `adwaita-icon-theme-git` this removes `pamac` !!! So following build will fail
 
+`adwaita-qt` hangs up
+
