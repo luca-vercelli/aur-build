@@ -42,15 +42,14 @@ Run with
 
     ./aur-build.py --run
 
-Other options are documented with
-
-    ./aur-build.py --help
-
-## Statistics on build results
 Build results are saved in a database `/var/cache/aur-build/db`.
 Show some statistics on this database with
 
     ./aur-build.py --stats
+    
+Other options are documented with
+
+    ./aur-build.py --help
 
 ## Bad packages to take care of
 
