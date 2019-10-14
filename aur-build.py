@@ -514,7 +514,7 @@ if __name__ == "__main__":
             exit(5)
         # warning: we are not checking if OFFICIAL
         pkg.build()
-        b.write(pkgs_dict)
+        db.write(pkgs_dict)
         print("Done.")
         something_was_done = True
 
