@@ -1,5 +1,5 @@
 # aur-build
-Build **all** AUR packages via `pamac` (i.e. this is intended for Manjaro Linux)
+Build **all** AUR packages
 
 Many days of execution can be required to build all. I am building all packages in a VirtualBox machine with 2GB RAM, 1GB /tmp space, inside a laptop (Manjaro Linux CLI). I expect at least 200 days of execution (=5 min x 58000 packages), and many packages won't build due to lack of resources.
 
