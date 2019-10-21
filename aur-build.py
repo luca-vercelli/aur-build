@@ -26,6 +26,7 @@ LOCAL_DB_PATH = "/var/cache/aur-build/"
 LOCAL_DB = LOCAL_DB_PATH + "db"
 PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-" + getpass.getuser()
 PACMAN_PKG_FOLDER = "/var/cache/pacman/pkg/"
+BUILD_FOLDER = "/var/tmp/aur-build-" + getpass.getuser()
 STOPFILE = LOCAL_DB_PATH + "stop"       # touch this to stop execution
 
 STATUS_NEW = "NEW"
@@ -145,7 +146,7 @@ class Package:
 
     def build(self):
         """
-        Install the package via pamac, then removes it (just to have the .tar.xz)
+        Install the package, to have the .tar.xz
         Update the object itself
         WARNING: enable wheel in /etc/sudoers, and polkit
         """
@@ -154,44 +155,59 @@ class Package:
         self.buildtime = None
         self.builtwhen = get_iso_date()   # es. 2008-11-22
         try:
-            sh.pamac("build", "--no-confirm", self.pkgname,
+            #sh.pamac("build", "--no-confirm", self.pkgname,
+            #         _in=sys.stdin,
+            #         _out=sys.stdout,
+            #         _err=sys.stderr,
+            #         _timeout=7200)         # max. two hours
+            os.chdir(BUILD_FOLDER)
+            sh.git("clone", "https://aur.archlinux.org/" + self.pkgname + ".git",
                      _in=sys.stdin,
                      _out=sys.stdout,
                      _err=sys.stderr,
                      _timeout=7200)         # max. two hours
-            # Instead, we could use
-            # git clone https://aur.archlinux.org/pkgname.git
-            # cd pkgname
-            # makepkg -sc    # without -i
-            # that won't check for aur dependencies
-            #
-            # I don't know package version here. I take the last one built
-            file_filter = PACMAN_PKG_FOLDER + self.pkgname + "*.pkg.tar.xz"
-            self.filename = sorted(glob.glob(file_filter))[-1]
-            self.status = STATUS_BUILDS
-        except sh.ErrorReturnCode as e:
-            print("Pamac aborted with status %d" % e.exit_code)
+            try:
+                os.chdir(BUILD_FOLDER + "/" + self.pkgname)
+                sh.makepkg("-sc", "--noconfirm",
+                         _in=sys.stdin,
+                         _out=sys.stdout,
+                         _err=sys.stderr,
+                         _timeout=7200)         # max. two hours
+                # that won't check for aur dependencies
+                #
+                # I don't know package version here. I take the last one built
+                file_filter = BUILD_FOLDER + "/" + self.pkgname + "/" + self.pkgname + "*.pkg.tar.xz"
+                self.status = STATUS_BUILDS
+                try:
+                    self.filename = sorted(glob.glob(file_filter))[-1]
+                except IndexError:
+                    self.filename = None
+            except sh.ErrorReturnCode as e:
+                print("makepkg aborted with status %d" % e.exit_code)
+                self.status = STATUS_DOESNTBUILD
+        except sh.ErrorReturnCode as e1:
+            print("git clone aborted with status %d" % e1.exit_code)
             self.status = STATUS_DOESNTBUILD
         # for all other exceptions, raise
 
         self.buildtime = round((time.time() - start_time) / 60)
 
-        if self.status == STATUS_BUILDS:
-            try:
-                sh.pamac("remove", "--no-confirm", self.pkgname,
-                         _out=sys.stdout,
-                         _err=sys.stderr)
-                # suggestion: don't use RemoveUnrequiredDeps
-            except sh.ErrorReturnCode as e:
-                print("Warning! cannot remove package. Pamac aborted with status %d" %
-                      e.exit_code)
-            # for all other exceptions, raise
+        #if self.status == STATUS_BUILDS:
+        #    try:
+        #        sh.pamac("remove", "--no-confirm", self.pkgname,
+        #                 _out=sys.stdout,
+        #                 _err=sys.stderr)
+        #        # suggestion: don't use RemoveUnrequiredDeps
+        #    except sh.ErrorReturnCode as e:
+        #        print("Warning! cannot remove package. Pamac aborted with status %d" %
+        #              e.exit_code)
+        #    # for all other exceptions, raise
 
         # clean build folder
         # why pamac does not clean it by itself ?!?
         # warning: shutil.rmtree fails because pkg subfolder is not readable
         # shutil.rmtree(PAMAC_BUILD_FOLDER)
-        sh.rm("-rf", PAMAC_BUILD_FOLDER)
+        # sh.rm("-rf", PAMAC_BUILD_FOLDER)
 
 
 def program_name():
