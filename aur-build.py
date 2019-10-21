@@ -160,6 +160,7 @@ class Package:
             #         _out=sys.stdout,
             #         _err=sys.stderr,
             #         _timeout=7200)         # max. two hours
+            os.makedirs(BUILD_FOLDER, exist_ok=True)
             os.chdir(BUILD_FOLDER)
             sh.git("clone", "https://aur.archlinux.org/" + self.pkgname + ".git",
                    _in=sys.stdin,
@@ -175,7 +176,6 @@ class Package:
                            _timeout=7200)         # max. two hours
                 # that won't check for aur dependencies
                 #
-                # I don't know package version here. I take the last one built
                 file_filter = BUILD_FOLDER + "/" + self.pkgname + "/" + self.pkgname + "*.pkg.tar.xz"
                 self.status = STATUS_BUILDS
                 try:
