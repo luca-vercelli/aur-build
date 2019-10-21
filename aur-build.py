@@ -66,7 +66,7 @@ class Database:
                              'Build time (min)',
                              'Built on',
                              'Filename'])
-            
+
             for pkg in sorted(pkgs_dict.values()):
                 writer.writerow([pkg.pkgname,
                                  pkg.status,
@@ -155,24 +155,24 @@ class Package:
         self.buildtime = None
         self.builtwhen = get_iso_date()   # es. 2008-11-22
         try:
-            #sh.pamac("build", "--no-confirm", self.pkgname,
+            # sh.pamac("build", "--no-confirm", self.pkgname,
             #         _in=sys.stdin,
             #         _out=sys.stdout,
             #         _err=sys.stderr,
             #         _timeout=7200)         # max. two hours
             os.chdir(BUILD_FOLDER)
             sh.git("clone", "https://aur.archlinux.org/" + self.pkgname + ".git",
-                     _in=sys.stdin,
-                     _out=sys.stdout,
-                     _err=sys.stderr,
-                     _timeout=7200)         # max. two hours
+                   _in=sys.stdin,
+                   _out=sys.stdout,
+                   _err=sys.stderr,
+                   _timeout=7200)         # max. two hours
             try:
                 os.chdir(BUILD_FOLDER + "/" + self.pkgname)
                 sh.makepkg("-sc", "--noconfirm",
-                         _in=sys.stdin,
-                         _out=sys.stdout,
-                         _err=sys.stderr,
-                         _timeout=7200)         # max. two hours
+                           _in=sys.stdin,
+                           _out=sys.stdout,
+                           _err=sys.stderr,
+                           _timeout=7200)         # max. two hours
                 # that won't check for aur dependencies
                 #
                 # I don't know package version here. I take the last one built
@@ -192,7 +192,7 @@ class Package:
 
         self.buildtime = round((time.time() - start_time) / 60)
 
-        #if self.status == STATUS_BUILDS:
+        # if self.status == STATUS_BUILDS:
         #    try:
         #        sh.pamac("remove", "--no-confirm", self.pkgname,
         #                 _out=sys.stdout,
@@ -321,6 +321,7 @@ def stop_file_exists():
     """
     return os.path.exists(STOPFILE)
 
+
 def build_all(pkgs_dict, build_status=[STATUS_NEW]):
     """
     Build all packages with correct status
@@ -330,12 +331,12 @@ def build_all(pkgs_dict, build_status=[STATUS_NEW]):
     num_analysed_packages = 0
     for pkgname, pkg in pkgs_dict.items():
         print("=== Reading package: %s =========" % pkgname)
-        
+
         if args.skip_packages and num_skipped_packages < args.skip_packages:
             print("Skipping.")
             num_skipped_packages += 1
             continue
-        
+
         num_analysed_packages += 1
 
         if pkg.status not in build_status:
@@ -483,12 +484,12 @@ if __name__ == "__main__":
     db = Database(LOCAL_DB)
 
     something_was_done = False
-    
+
     if args.run:
         args.download = True
         args.build_new = True
         args.build_err = True
-    
+
     if args.build_all:
         args.build_new = True
         args.build_err = True
