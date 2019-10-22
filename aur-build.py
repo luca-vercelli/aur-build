@@ -3,7 +3,8 @@
 # external dependencies:
 #   python-sh   (provides module sh)
 #   pacman
-#   pamac
+#   git
+#   makepkg
 #   wget
 #   gunzip
 #
@@ -19,6 +20,7 @@ import csv
 import pydoc
 import glob
 import sh
+import shutil
 import getpass
 
 VERSION = "0.1"
@@ -163,6 +165,7 @@ class Package:
             #         _timeout=7200)         # max. two hours
             os.makedirs(BUILD_FOLDER, exist_ok=True)
             os.chdir(BUILD_FOLDER)
+            sh.rm("-rf", BUILD_FOLDER + "/" + self.pkgname)
             sh.git("clone", "https://aur.archlinux.org/" + self.pkgname + ".git",
                    _in=sys.stdin,
                    _out=sys.stdout,
@@ -182,7 +185,7 @@ class Package:
                 try:
                     filename = sorted(glob.glob(file_filter))[-1]
                     self.filename = os.path.basename(filename)
-                    os.rename(filename, PACKAGES_FOLDER + "/" + self.filename)
+                    shutil.move(filename, PACKAGES_FOLDER + "/" + self.filename)
                 except IndexError:
                     self.filename = None
             except sh.ErrorReturnCode as e:
@@ -451,7 +454,7 @@ def print_statistics(pkgs_dict):
         if tm > max_buildtime:
             max_buildtime = tm
         if pkg.filename is not None:
-            sz = os.path.getsize(pkg.filename)              # TODO could be stored on db
+            sz = os.path.getsize(BUILD_FOLDER + "/" + pkg.filename)              # TODO could be stored on db
             fsize = fsize + sz
             if sz > max_fsize:
                 max_fsize = sz
