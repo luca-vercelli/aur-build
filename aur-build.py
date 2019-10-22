@@ -214,6 +214,7 @@ class Package:
         # warning: shutil.rmtree fails because pkg subfolder is not readable
         # shutil.rmtree(PAMAC_BUILD_FOLDER)
         # sh.rm("-rf", PAMAC_BUILD_FOLDER)
+        sh.rm("-rf", BUILD_FOLDER + "/" + self.pkgname)
 
 
 def program_name():
