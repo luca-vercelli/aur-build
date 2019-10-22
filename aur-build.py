@@ -24,9 +24,10 @@ import getpass
 VERSION = "0.1"
 LOCAL_DB_PATH = "/var/cache/aur-build/"
 LOCAL_DB = LOCAL_DB_PATH + "db"
-PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-" + getpass.getuser()
-PACMAN_PKG_FOLDER = "/var/cache/pacman/pkg/"
+# PAMAC_BUILD_FOLDER = "/var/tmp/pamac-build-" + getpass.getuser()
+# PACMAN_PKG_FOLDER = "/var/cache/pacman/pkg/"
 BUILD_FOLDER = "/var/tmp/aur-build-" + getpass.getuser()
+PACKAGES_FOLDER = "/mnt/packages"
 STOPFILE = LOCAL_DB_PATH + "stop"       # touch this to stop execution
 
 STATUS_NEW = "NEW"
@@ -174,12 +175,14 @@ class Package:
                            _out=sys.stdout,
                            _err=sys.stderr,
                            _timeout=7200)         # max. two hours
-                # that won't check for aur dependencies
-                #
-                file_filter = BUILD_FOLDER + "/" + self.pkgname + "/" + self.pkgname + "*.pkg.tar.xz"
+                # WARNING makepkg won't search for aur dependencies
                 self.status = STATUS_BUILDS
+                file_filter = BUILD_FOLDER + "/" + self.pkgname + "/" + self.pkgname + "*.pkg.tar.xz"
+                
                 try:
-                    self.filename = sorted(glob.glob(file_filter))[-1]
+                    filename = sorted(glob.glob(file_filter))[-1]
+                    self.filename = os.path.basename(filename)
+                    os.rename(filename, PACKAGES_FOLDER + "/" + self.filename)
                 except IndexError:
                     self.filename = None
             except sh.ErrorReturnCode as e:
@@ -222,7 +225,7 @@ def create_arg_parser():
     Create parser for parsing CLI arguments
     """
     parser = argparse.ArgumentParser(
-                        description='Build all AUR packages via pamac')
+                        description='Build all AUR packages')
     group_actions = parser.add_argument_group("Actions")
     group_actions.add_argument('--run',
                                dest='run',
