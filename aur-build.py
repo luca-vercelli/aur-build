@@ -455,7 +455,7 @@ def print_statistics(pkgs_dict):
         if tm > max_buildtime:
             max_buildtime = tm
         if pkg.filename is not None:
-            sz = os.path.getsize(BUILD_FOLDER + "/" + pkg.filename)              # TODO could be stored on db
+            sz = os.path.getsize(PACKAGES_FOLDER + "/" + pkg.filename)              # TODO size could be stored on db
             fsize = fsize + sz
             if sz > max_fsize:
                 max_fsize = sz
