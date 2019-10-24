@@ -136,14 +136,20 @@ class Package:
     def become_official(self):
         """
         Search the package in standard Manjaro repositories
-        If found, set self.status = STATUS_OFFICIAL
+        Also non-git packages are considered
         """
         try:
-            sh.pacman("-Ss", self.pkgname)
-            self.status = STATUS_OFFICIAL
+            sh.pacman("-Ss", "^" + self.pkgname + "$")
+            # ^ and $ for exact match
+            # if not found, pacman gives rc=1
             return True
         except sh.ErrorReturnCode_1:
-            # if not found, pacman gives rc=1
+            if self.pkgname.endswith("-git"):
+                try:
+                    sh.pacman("-Ss", "^" + self.pkgname[:-4] + "$")
+                    return True
+                except sh.ErrorReturnCode_1:
+                    return False
             return False
         # for all other exceptions, raise
 
@@ -351,6 +357,7 @@ def build_all(pkgs_dict, build_status=[STATUS_NEW]):
             # DELETED and OFFICIAL packages fall here
             # We never build packages DELETED or OFFICIAL
         elif pkg.become_official():
+            pkg.status = STATUS_OFFICIAL
             db.write(pkgs_dict)
             must_build = False
         else:
@@ -455,7 +462,7 @@ def print_statistics(pkgs_dict):
         if tm > max_buildtime:
             max_buildtime = tm
         if pkg.filename is not None:
-            sz = os.path.getsize(PACKAGES_FOLDER + "/" + pkg.filename)              # TODO size could be stored on db
+            sz = os.path.getsize(PACKAGES_FOLDER + "/" + pkg.filename)              # TODO could be stored on db
             fsize = fsize + sz
             if sz > max_fsize:
                 max_fsize = sz
