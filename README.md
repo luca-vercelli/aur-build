@@ -63,3 +63,5 @@ Other options are documented with
 
 `adwaita-qt` hangs up
 
+`alink` asks the user for something, even if `--no-confirm` pacman option has been selected
+
