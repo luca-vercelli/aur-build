@@ -65,3 +65,5 @@ Other options are documented with
 
 `alink` asks the user for something, even if `--no-confirm` pacman option has been selected
 
+`amass` builds something as root ?!? then cannot delete it
+
