@@ -67,3 +67,4 @@ Other options are documented with
 
 `amass` builds something as root ?!? then cannot delete it
 
+`angular-cli` asks the user for something, even if `--no-confirm` pacman option has been selected
